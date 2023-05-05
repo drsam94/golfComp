@@ -1,0 +1,1 @@
+def ans(x, y): return 0
