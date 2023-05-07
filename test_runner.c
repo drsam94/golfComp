@@ -5,8 +5,8 @@ extern long ans();
 
 int main(int argc, char** argv) {
     int inputs[32];
-    for (int i = 1; i < argc; ++i) {
-        inputs[i - 1] = atoi(argv[i]);
+    for (int index = 1; index < argc; ++index) {
+        inputs[index - 1] = atoi(argv[index]);
     }
     int output;
     if (argc == 2) {

@@ -33,8 +33,8 @@ auto my_invoke(F&& f, ArgsArray&& aa) {
 
 int main(int argc, char** argv) {
     std::array<int, 32> inputs;
-    for (int i = 1; i < argc; ++i) {
-        inputs[i - 1] = atoi(argv[i]);
+    for (int index = 1; index < argc; ++index) {
+        inputs[index - 1] = atoi(argv[index]);
     }
     long output = my_invoke(&ans, inputs);
     printf("%lld\n", output);

@@ -1,1 +1,1 @@
-long ans(int x){long r=0;for(int i=0;++i<x;)r+=i*!(i%3&&i%5);return r;}
+long ans(int x){long r=0,i=0;while(++i<x)r+=i*!(i%3*i%5);return r;}
