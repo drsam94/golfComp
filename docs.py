@@ -29,7 +29,23 @@ ans=lambda*a:sum(a)
 ```
 ### C++
 extension: .cc
-I haven't specified this yet
+All C++ solutions must be compatible with gcc 10.2.1 with `--std=c++20`, and should define a function like: 
+```
+long ans(int x, int y) {
+
+}
+```
+with the appropriate number of arguments.
+### C
+extension: .c
+All C solutions must be compilable with gcc 10.2.1 with `--std=c17`, and should define a function like:
+```
+long ans(int x, int y) {
+
+}
+```
+with the appropriate number of arguments. Do note that you must simply define a function which can be called by passing
+the appropriate number of arguments with the appropriate times: the actual definition can look different (e.g "implicit int")
 ## Problems
 The following is the list of problems in the challenge
 """

@@ -3,66 +3,10 @@
 
 import sys
 from pathlib import Path 
-from typing import Optional, Dict, List, Any, Tuple, Iterable, Generator
-from abc import ABC, abstractmethod
+from typing import List, Any, Tuple, Iterable, Generator
 from enum import Enum
-
-class Language(Enum):
-    Python = 1
-    Cpp = 2
-
-class ProblemStatement:
-    def __init__(self, name: str, test_inputs: Iterable[Tuple]):
-        self.name = name
-        self.test_inputs = test_inputs
-
-class TestResult:
-    def __init__(self, size=0, err: Optional[str] = None, time=0.):
-        self.size = size
-        self.err = err
-        self.time = time
-
-    def __str__(self):
-        if self.err:
-            return f"ERROR: {self.err}"
-        else:
-            return f"SUCCESS: {self.size} (time {self.time}s)"
-
-class Executor(ABC):
-    @abstractmethod 
-    def __init__(self, filename: Path):
-        """
-        Initialize the executor and do any preprocessing on the file to get ready to execute
-        (e.g import a python module or compile an external language)
-        """
-        ...
-    
-    @abstractmethod
-    def execute(self, args: Tuple) -> Any:
-        """
-        Take an input argument and compute the output. We haven't fully defined the universe of inputs
-        and outputs and how they should be passed, but probably everything is an int or a str
-        """
-        ...
-
-class PythonExecutor(Executor):
-
-    def __init__(self, filename: Path):
-        import importlib.util
-        module_name = "test.golf"
-        spec = importlib.util.spec_from_file_location(module_name, filename)
-        assert spec
-        self.test_module = importlib.util.module_from_spec(spec)
-        sys.modules[module_name] = self.test_module
-        spec.loader.exec_module(self.test_module) # type: ignore
-
-    def execute(self, args: Tuple) -> Any:
-        return self.test_module.ans(*args) # type: ignore
-    
-def make_executor(lang: Language, filename: Path) -> Executor:
-    if lang != Language.Python:
-        raise Exception("Unsupported")
-    return PythonExecutor(filename)
+from executor import make_executor
+from data import Language, ProblemStatement, TestResult
 
 def wrap_in_tuple(input: Iterable[Any]) -> Iterable[Any]:
     for elem in input:
@@ -96,19 +40,27 @@ def find_solution_file(dir: Path, name: str) -> Tuple[Language, Path]:
         lang = Language.Python 
     elif ext in [".cc", ".cpp"]:
         lang = Language.Cpp
+    elif ext == ".c":
+        lang = Language.C
     else:
         raise FileNotFoundError(f"Found solution {matched_file} for {name} with unsupported language extension")
     return (lang, matched_file)
 
 def check_results(dir: Path, problem: ProblemStatement) -> TestResult:
-    lang, orig_input_file = find_solution_file(dir, problem.name)
+    try:
+        lang, orig_input_file = find_solution_file(dir, problem.name)
+    except Exception as e:
+        return TestResult(err=str(e))
     from tempfile import TemporaryDirectory
     import solutions
     with TemporaryDirectory() as tmpdir:
         import shutil
         dest_name = Path(tmpdir) / orig_input_file.name
         shutil.copyfile(orig_input_file, dest_name)
-        executor = make_executor(lang, dest_name)
+        try:
+            executor = make_executor(lang, dest_name)
+        except Exception as e:
+            return TestResult(err=str(e))
         import timeit
         start_time = timeit.default_timer()
         elapsed_time = 0.

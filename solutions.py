@@ -15,8 +15,8 @@ def test2(start: int, end: int) -> int:
     100 and not 400, it is not a leap year
     30 days hath September, April, June and November
 
-    Given a start year >= 1900 and and an end year, how many "Friday the 13ths" occurred between
-    those two years (inclusive)
+    Given 1900 <= start_year <= end_year <= 9999, how many "Friday the 13ths" occurred between
+    those two years? (inclusive)
     """ 
     month_size = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     ret = 0
