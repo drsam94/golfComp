@@ -11,11 +11,6 @@ class Language(Enum):
     Python = 1
     Cpp = 2
 
-def add_extension(lang: Language, fname: str) -> str:
-    if lang == Language.Python:
-        return f"{fname}.py"
-    return fname
-
 class ProblemStatement:
     def __init__(self, name: str, test_inputs: Iterable[Tuple]):
         self.name = name
@@ -39,7 +34,6 @@ class Executor(ABC):
         """
         Initialize the executor and do any preprocessing on the file to get ready to execute
         (e.g import a python module or compile an external language)
-        Note that the filename doe
         """
         ...
     
@@ -60,10 +54,10 @@ class PythonExecutor(Executor):
         assert spec
         self.test_module = importlib.util.module_from_spec(spec)
         sys.modules[module_name] = self.test_module
-        spec.loader.exec_module(self.test_module)
+        spec.loader.exec_module(self.test_module) # type: ignore
 
     def execute(self, args: Tuple) -> Any:
-        return self.test_module.ans(*args)
+        return self.test_module.ans(*args) # type: ignore
     
 def make_executor(lang: Language, filename: Path) -> Executor:
     if lang != Language.Python:
@@ -89,14 +83,30 @@ def problem_list() -> List[ProblemStatement]:
     ]))
     return ret
 
-def check_results(lang: Language, dir: Path, problem: ProblemStatement) -> TestResult:
-    filename = add_extension(lang, problem.name)
-    orig_input_file = dir / filename
+def find_solution_file(dir: Path, name: str) -> Tuple[Language, Path]:
+    import glob 
+    matched_files = glob.glob(f"{dir/name}.*")
+    if not matched_files:
+        raise FileNotFoundError(f"No matching files found for {name} in {dir}")
+    if len(matched_files) > 1:
+        raise FileNotFoundError(f"Found more than one matching file for {name} in {dir}")
+    matched_file = Path(matched_files[0])
+    ext = matched_file.suffix
+    if ext == ".py":
+        lang = Language.Python 
+    elif ext in [".cc", ".cpp"]:
+        lang = Language.Cpp
+    else:
+        raise FileNotFoundError(f"Found solution {matched_file} for {name} with unsupported language extension")
+    return (lang, matched_file)
+
+def check_results(dir: Path, problem: ProblemStatement) -> TestResult:
+    lang, orig_input_file = find_solution_file(dir, problem.name)
     from tempfile import TemporaryDirectory
     import solutions
     with TemporaryDirectory() as tmpdir:
         import shutil
-        dest_name = Path(tmpdir) / filename
+        dest_name = Path(tmpdir) / orig_input_file.name
         shutil.copyfile(orig_input_file, dest_name)
         executor = make_executor(lang, dest_name)
         import timeit
@@ -118,13 +128,12 @@ def check_results(lang: Language, dir: Path, problem: ProblemStatement) -> TestR
 def main():
     import argparse 
     parser = argparse.ArgumentParser("harness", "Testing harness for codegolf, supply file to use as argument")
-    parser.add_argument("--lang", type=lambda l: Language[l], default=Language.Python, choices=list(Language))
     parser.add_argument("answerdir", metavar="answerdir", type=str)
 
     args = parser.parse_args()
     results = {}
     for problem in problem_list():
-        results[problem.name] = check_results(args.lang, Path(args.answerdir), problem)
+        results[problem.name] = check_results(Path(args.answerdir), problem)
     tot_size = 0
     for name, result in results.items():
         print(f"{name}: {result}")

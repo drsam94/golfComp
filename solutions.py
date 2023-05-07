@@ -8,7 +8,7 @@ def test1(k: int) -> int:
     """
     return sum(x for x in range(k) if x % 3 == 0 or x % 5 == 0)
 
-def test2(s: int, e: int) -> int:
+def test2(start: int, end: int) -> int:
     """
     1 Jan 1900 was a Monday
     A leap year occurs on most years divisible by 4, but if the year is divisble by 
@@ -25,14 +25,14 @@ def test2(s: int, e: int) -> int:
     day_of_month = 0
     month = 0
     year = 1900
-    while year <= e:
-        if day_of_week == friday and day_of_month == 12 and year >= s:
+    while year <= end:
+        if day_of_week == friday and day_of_month == 12 and year >= start:
             ret += 1
         day_of_week += 1 
         day_of_week %= 7
         day_of_month += 1
         eom = month_size[month]
-        if month == 2 and year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
+        if month == 1 and year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
             eom += 1
         if day_of_month == eom:
             day_of_month = 0
