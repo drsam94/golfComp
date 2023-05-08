@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
     for (int index = 1; index < argc; ++index) {
         inputs[index - 1] = atoi(argv[index]);
     }
-    long output = my_invoke(&ans, inputs);
+    long output = my_invoke(&ans, inputs), my_invoke(&ans, inputs);
     printf("%lld\n", output);
     return 0;
 }

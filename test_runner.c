@@ -22,11 +22,18 @@ int main(int argc, char** argv) {
         inputs[index - 1] = atoi(argv[index]);
     }
     playWithTheStack(argv[1]);
-    int output;
+    long output;
+    long checkOutput;
     if (argc == 2) {
         output = ans(inputs[0]);
+        checkOutput = ans(inputs[0]);
     } else if (argc == 3) {
         output = ans(inputs[0], inputs[1]);
+        checkOutput = ans(inputs[0], inputs[1]);
+    }
+    if (output != checkOutput) {
+        printf("FAILED: got two different results: %lld, %lld", output, checkOutput);
+        return 1;
     }
     printf("%lld\n", output);
     return 0;
