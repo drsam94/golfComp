@@ -23,7 +23,9 @@ def problem_list() -> List[ProblemStatement]:
         (1950, 1950),
         (1975, 2089),
         (3978, 4789),
-        (1900, 5123)
+        (1900, 5123),
+        (1900, 9999),
+        (1900, 1900)
     ]))
     return ret
 
@@ -36,13 +38,8 @@ def find_solution_file(dir: Path, name: str) -> Tuple[Language, Path]:
         raise FileNotFoundError(f"Found more than one matching file for {name} in {dir}")
     matched_file = Path(matched_files[0])
     ext = matched_file.suffix
-    if ext == ".py":
-        lang = Language.Python 
-    elif ext in [".cc", ".cpp"]:
-        lang = Language.Cpp
-    elif ext == ".c":
-        lang = Language.C
-    else:
+    lang = Language.from_ext(ext)
+    if not lang:
         raise FileNotFoundError(f"Found solution {matched_file} for {name} with unsupported language extension")
     return (lang, matched_file)
 

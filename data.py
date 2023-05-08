@@ -5,6 +5,20 @@ class Language(Enum):
     Python = 1
     Cpp = 2
     C = 3
+    Javascript = 4
+
+    @staticmethod
+    def from_ext(ext: str):
+        if ext == ".py":
+            return Language.Python 
+        elif ext in [".cc", ".cpp"]:
+            return Language.Cpp
+        elif ext == ".c":
+            return Language.C
+        elif ext == ".js":
+            return Language.Javascript
+        else:
+            return None
 
 class ProblemStatement:
     def __init__(self, name: str, test_inputs: Iterable[Tuple]):

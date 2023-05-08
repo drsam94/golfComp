@@ -4,6 +4,7 @@ from typing import Tuple,Any,Optional
 from data import Language
 import sys 
 import subprocess 
+from subprocess import PIPE
 
 class Executor(ABC):
     @abstractmethod 
@@ -72,6 +73,24 @@ class CppExecutor(Executor):
     def execute(self, args: Tuple):
         return execute_c_common(self, args)
 
+class JSExecutor(Executor):
+    def __init__(self, filename: Path):
+        self.filename = filename 
+    
+    def execute(self, args: Tuple):
+        node_process = subprocess.Popen(["node", "-i"], stdin=PIPE, stdout=PIPE)
+        node_process.stdin.write(open(self.filename, "rb").read())
+        eval_str = f"\nconsole.log();ans({','.join(str(a) for a in args)})\n"
+        try:
+            out, err = node_process.communicate(input=eval_str.encode(), timeout=5)
+        except Exception as e:
+            node_process.kill()
+            raise e
+        if err:
+            raise Exception(f"Error when running: {err.decode()}")
+        # NB: determine if we should output an int or not
+        return int(out.decode().splitlines()[-2])
+        
 def make_executor(lang: Language, filename: Path) -> Executor:
 
     cls : Optional[Executor] = None
@@ -81,7 +100,9 @@ def make_executor(lang: Language, filename: Path) -> Executor:
         cls = CExecutor
     elif lang == Language.Cpp:
         cls = CppExecutor
+    elif lang == Language.Javascript:
+        cls = JSExecutor
     if cls is None:
-        raise Exception("Unsupported Language {lang}")
+        raise Exception(f"Unsupported Language {lang}")
     return cls(filename)
 
