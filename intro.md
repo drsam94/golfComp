@@ -26,23 +26,28 @@ ans=lambda*a:sum(a)
 ```
 ### C++
 extension: .cc
-All C++ solutions must be compatible with gcc 10.2.1 with `--std=c++20`, and should define a function like: 
+All C++ solutions must be compatible with clang 11.0.1-2 with `--std=c++20` and other flags, and should define a function like: 
 ```
 long ans(int x, int y) {
 
 }
 ```
-with the appropriate number of arguments.
+with the appropriate number of arguments. Note that, while it may be tempting to save characters, declarations like. `int x;` 
+will declare an uninitialized variable on the stack. While you may be able to run it locally in such a way that such code passes,
+the testing harness will attempt to make your code fail if you try such tricks. Locally running with `fsanitize=memory` can catch many,
+but not all issues of this form. Other kinds of UB are "okay" if you can get away with it as the code does only have to work for one set of 
+compiler flags, but reading uninitialized memory effectively adds an implicit dependence for your code on the calling code, which you do not have access to.
 ### C
 extension: .c
-All C solutions must be compilable with gcc 10.2.1 with `--std=c17`, and should define a function like:
+All C solutions must be compilable with clang 11.0.1-2 with `--std=c17` and other flags, and should define a function like:
 ```
 long ans(int x, int y) {
 
 }
 ```
 with the appropriate number of arguments. Do note that you must simply define a function which can be called by passing
-the appropriate number of arguments with the appropriate times: the actual definition can look different (e.g "implicit int")
+the appropriate number of arguments with the appropriate times: the actual definition can look different (e.g "implicit int"). All the
+notes in the `C++` section about UB apply here as well
 ## Problems
 The following is the list of problems in the challenge
 ### test1

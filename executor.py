@@ -53,7 +53,7 @@ class CExecutor(Executor):
     def __init__(self, filename: Path):
         self.test_dir = filename.parent 
         self.test_name = filename.stem
-        run_result = subprocess.run(["gcc", "--std=c17", "-o", self.test_dir / self.test_name, "test_runner.c", filename], capture_output=True)
+        run_result = subprocess.run(["clang", "--std=c17", "-fsanitize=memory", "-o", self.test_dir / self.test_name, "test_runner.c", filename], capture_output=True)
         if run_result.returncode != 0:
             raise Exception(f"Compilation Failed: {run_result.stderr.decode()}")
     
@@ -66,7 +66,7 @@ class CppExecutor(Executor):
         self.test_dir = filename.parent 
         shutil.copy(filename, self.test_dir / "test_function.inc")
         self.test_name = filename.stem
-        run_result = subprocess.run(["g++", "--std=c++20", "-o", self.test_dir / self.test_name, "test_runner.cc", "-I", self.test_dir], capture_output=True)
+        run_result = subprocess.run(["clang++", "--std=c++20", "-fsanitize=memory", "-o", self.test_dir / self.test_name, "test_runner.cc", "-I", self.test_dir], capture_output=True)
         if run_result.returncode != 0:
             raise Exception(f"Compilation Failed: {run_result.stderr.decode()}")
 

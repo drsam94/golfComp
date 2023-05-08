@@ -41,3 +41,16 @@ def test2(start: int, end: int) -> int:
             month = 0
             year += 1
     return ret    
+
+def test3(multiplier: int, modulus: int) -> int:
+    """
+    For a given number N, consider the sequence of numbers s_n(N) forms by taking substrings from the left, e.g
+    1234567890 -> [1, 12, 123, 1234, 12345, 123456, 1234567, 12345678, 123456789] = 
+    We say that a sequence a_n divides a sequence s_n if for each 1 <= i <= n, a_i divides s_i 
+    (note we start i at 1, skipping the first element)
+    Now consider the sequence formed my a multiplier K and a modulus m, defined by `a_n = (n*K) mod m`
+    
+    Given the inputs of `multiplier` 1 <= K <= 100 and a `modulus` 2 <= m <= 100, find the sum of all 10-digit numbers N which:
+     * Contain each of the digits 0-9 exactly once
+     * a_n(K, m) divides s_n(N)
+    """
