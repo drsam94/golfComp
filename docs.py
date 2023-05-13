@@ -42,15 +42,26 @@ but not all issues of this form. Other kinds of UB are "okay" if you can get awa
 compiler flags, but reading uninitialized memory effectively adds an implicit dependence for your code on the calling code, which you do not have access to.
 ### C
 extension: .c
-All C solutions must be compilable with clang 11.0.1-2 with `--std=c17` and other flags, and should define a function like:
+All C solutions must be compilable with clang 11.0.1-2 with `--std=c17` and other flags, and should define a function that will be called through the
+declaration
 ```
-long ans(int x, int y) {
-
-}
+extern long ans();
 ```
-with the appropriate number of arguments. Do note that you must simply define a function which can be called by passing
-the appropriate number of arguments with the appropriate times: the actual definition can look different (e.g "implicit int"). All the
-notes in the `C++` section about UB apply here as well
+It will be called with a series of arguments agreeing with the python signature: `char*` for `str`, `int` for `int`, and with a final 
+`char*` outparam if the function returns a string in python. You can safely assume that outparam has enough memory allocated to write 
+the solution. See the following examples:
+```
+// Python signature (int, int) -> int
+long ans(int x, int y) { ... }
+// Python signature (str, int) -> str
+void ans(char* x, int y, char* out) { ... }
+```
+All the notes in the `C++` section about UB apply here as well
+### APL
+APL is an interesting programming language for sure for golf. APL 1.8 is supported.
+The arguments to the program will be passed, as character arrays, to the ARGS system
+variable as is done in the APL "script" mode. You do not need to end your script with `)OFF` as that will be added for you.
+Solutions in APL, like all other languages, will be graded on number of *characters*, not number of bytes
 ## Problems
 The following is the list of problems in the challenge
 """

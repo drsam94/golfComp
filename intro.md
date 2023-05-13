@@ -52,10 +52,10 @@ notes in the `C++` section about UB apply here as well
 The following is the list of problems in the challenge
 ### test1
 
-    Find the sum of all positive integers less than the input k
-    which are a multiple of 3 or a multiple of 5.
-    For example, the list of numbers satisfying this property that 
-    are less than 10 is 3,5,6,9 so therefore the answer is their sum, 23
+Find the sum of all positive integers less than the input k
+which are a multiple of 3 or a multiple of 5.
+For example, the list of numbers satisfying this property that 
+are less than 10 is 3,5,6,9 so therefore the answer is their sum, 23
     
 Function signature:
 ```
@@ -63,16 +63,60 @@ test1(k: int) -> int
 ```
 ### test2
 
-    1 Jan 1900 was a Monday
-    A leap year occurs on most years divisible by 4, but if the year is divisble by 
-    100 and not 400, it is not a leap year
-    30 days hath September, April, June and November
+1 Jan 1900 was a Monday
+A leap year occurs on most years divisible by 4, but if the year is divisble by 
+100 and not 400, it is not a leap year
+30 days hath September, April, June and November
 
-    Given 1900 <= start_year <= end_year <= 9999, how many "Friday the 13ths" occurred between
-    those two years? (inclusive)
+Given 1900 <= start_year <= end_year <= 9999, how many "Friday the 13ths" occurred between
+those two years? (inclusive)
     
 Function signature:
 ```
 test2(start: int, end: int) -> int
+```
+### test3
+
+The Look and Say sequence begins with a starting integer, and evolves via the rule that the next number
+is constructed by replacing runs of numbers with their count, as though saying out their name, for example, 
+if the `start` value is 1:
+1 -> "one one" -> 11 -> "two ones" -> 21 -> "one two, one one" -> 1211 -> "one one, one two, two ones" -> 111221
+Given a `start` value, print out the value acheived after `count` iterations of this process
+For example test3(1, 0) = 1 and test3(1, 2) = 21
+    
+Function signature:
+```
+test3(start: int, count: int) -> str
+```
+### test4
+
+Befunge is a 2-D Programming language with intentional bespoke semantics. For this problem, we will implement a
+subset of Befunge, and your goal is to take as input a path to a file containing a befunge-subset program, and return
+its integral output. The language operates with a single program stack, and starts evaluating left-to-right starting 
+with the first character in the file, though if special characters are hit, control flow will go in other directions.
+See (https://esolangs.org/wiki/Befunge)[this webpage] for full details, but you must only implement the following operations:
+If control flow would ever fall off the "edge" of the program, it wraps to the other side (top to bottom, left to right, etc)
+```
++   Addition: Pop two values a and b, then push the result of a+b
+-   Subtraction: Pop two values a and b, then push the result of b-a
+*   Multiplication: Pop two values a and b, then push the result of a*b
+/   Integer division: Pop two values a and b, then push the result of b/a, rounded down. According to the specifications, if a is zero, ask the user what result they want.
+%   Modulo: Pop two values a and b, then push the remainder of the integer division of b/a.
+!   Logical NOT: Pop a value. If the value is zero, push 1; otherwise, push zero.
+`   Greater than: Pop two values a and b, then push 1 if b>a, otherwise zero.
+>   set direction right
+<   set direction left
+^   set direction up
+v   set direction down
+?   Random PC direction
+_   Horizontal IF: pop a value; set direction to right if value=0, set to left otherwise
+|   Vertical IF: pop a value; set direction to down if value=0, set to up otherwise
+:   Duplicate top stack value
+\  Swap top stack values
+@   End program execution, returning the top of the stack as program output (0 if stack is empty)
+
+Function signature:
+```
+test4(filename: str) -> int
 ```
 

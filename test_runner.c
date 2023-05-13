@@ -30,11 +30,19 @@ int main(int argc, char** argv) {
     } else if (argc == 3) {
         output = ans(inputs[0], inputs[1]);
         checkOutput = ans(inputs[0], inputs[1]);
+    } else if (argc == 4 && argv[3][0] == 'S') {
+        // heap allocate our 'buffer' to not disturb the prior stack manipulation
+        // maybe also corrupt this?
+        char* buf = malloc(1024);
+        buf[1023] = '\0';
+        ans(argv[1], inputs[1], buf);
+        printf("%s", buf);
+        return 0;
     }
     if (output != checkOutput) {
         printf("FAILED: got two different results: %lld, %lld", output, checkOutput);
         return 1;
     }
-    printf("%lld\n", output);
+    printf("%lld", output);
     return 0;
 }

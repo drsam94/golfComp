@@ -1,0 +1,1 @@
+int ans(s,r,o)char*s,r,*o;{for(;r--;s=o){char*O=s,n[99]={},*N=n,L,R=49;for(;L=*O++;++R)if(*O-L)*N++=R,*N++=L,R=48;for(N=n,O=o;*O++=*N++;);}}
