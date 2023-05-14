@@ -3,8 +3,7 @@
 
 import sys
 from pathlib import Path 
-from typing import List, Any, Tuple, Iterable, Generator
-from enum import Enum
+from typing import List, Any, Tuple, Iterable
 from executor import make_executor
 from data import Language, ProblemStatement, TestResult
 import inspect 
@@ -37,6 +36,10 @@ def problem_list() -> List[ProblemStatement]:
         ('1234', 4),
         ('12345', 4)
     ]))
+    ret.append(ProblemStatement("test4", wrap_in_tuple([
+        "reference_files/befunge/factorial.fun",
+        "reference_files/befunge/test_math.fun"
+    ])))
     return ret
 
 def find_solution_file(dir: Path, name: str) -> Tuple[Language, Path]:

@@ -82,12 +82,13 @@ class CppExecutor(Executor):
 
 class JSExecutor(Executor):
     def __init__(self, filename: Path, signature: Signature):
-        self.filename = filename 
+        self.filename = filename
+        self.signature = signature  
     
     def execute(self, args: Tuple):
         node_process = subprocess.Popen(["node", "-i"], stdin=PIPE, stdout=PIPE)
         node_process.stdin.write(open(self.filename, "rb").read())
-        eval_str = f"\nconsole.log();ans({','.join(str(a) for a in args)})\n"
+        eval_str = f"\nconsole.log();ans({','.join(repr(a) for a in args)})\n"
         try:
             out, err = node_process.communicate(input=eval_str.encode(), timeout=5)
         except Exception as e:
@@ -96,7 +97,11 @@ class JSExecutor(Executor):
         if err:
             raise Exception(f"Error when running: {err.decode()}")
         # NB: determine if we should output an int or not
-        return int(out.decode().splitlines()[-2])
+        ret = out.decode().splitlines()[-2]
+        if self.signature.return_annotation == str:
+            return ret.replace("'","")
+        else:
+            return int(ret)
 
 class APLExecutor(Executor):
     def __init__(self, filename: Path, signature: Signature):

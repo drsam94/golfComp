@@ -1,3 +1,4 @@
+from typing import List 
 
 def test1(k: int) -> int:
     """
@@ -86,11 +87,12 @@ its integral output. The language operates with a single program stack, and star
 with the first character in the file, though if special characters are hit, control flow will go in other directions.
 See (https://esolangs.org/wiki/Befunge)[this webpage] for full details, but you must only implement the following operations:
 If control flow would ever fall off the "edge" of the program, it wraps to the other side (top to bottom, left to right, etc)
+If you would pop from an empty stack, the value 0 is used
 ```
 +   Addition: Pop two values a and b, then push the result of a+b
 -   Subtraction: Pop two values a and b, then push the result of b-a
 *   Multiplication: Pop two values a and b, then push the result of a*b
-/   Integer division: Pop two values a and b, then push the result of b/a, rounded down. According to the specifications, if a is zero, ask the user what result they want.
+/   Integer division: Pop two values a and b, then push the result of b/a, rounded down. Undefined if a = 0.
 %   Modulo: Pop two values a and b, then push the remainder of the integer division of b/a.
 !   Logical NOT: Pop a value. If the value is zero, push 1; otherwise, push zero.
 `   Greater than: Pop two values a and b, then push 1 if b>a, otherwise zero.
@@ -98,12 +100,68 @@ If control flow would ever fall off the "edge" of the program, it wraps to the o
 <   set direction left
 ^   set direction up
 v   set direction down
-?   Random PC direction
 _   Horizontal IF: pop a value; set direction to right if value=0, set to left otherwise
 |   Vertical IF: pop a value; set direction to down if value=0, set to up otherwise
 :   Duplicate top stack value
 \\  Swap top stack values
+$   pop tock stack value and discard
 @   End program execution, returning the top of the stack as program output (0 if stack is empty)
 """
-    program = open(filename).readlines()
-    return 0
+    program = open(filename).read().splitlines()
+    stack: List[int] = []
+    pop = lambda : stack.pop() if stack else 0
+    pc = [0, 0]
+    dir = [1, 0]
+    while True:
+        op = program[pc[1]][pc[0]]
+        if op in '+-*/%`\\':
+            a = pop()
+            b = pop()
+            if op == '\\':
+                stack.append(a)
+                stack.append(b)
+            else:
+                if op == '+':
+                    v = a + b 
+                elif op == '-':
+                    v = b - a 
+                elif op == '*':
+                    v = b * a
+                elif op == '%':
+                    v = b % a 
+                elif op == '/':
+                    v = b // a 
+                elif op == '`':
+                    v = int(b > a)
+                stack.append(v)
+        
+        if op == '<':
+            dir = [-1, 0]
+        elif op == '>':
+            dir = [1, 0]
+        elif op == '^':
+            dir = [0, -1]
+        elif op == 'v':
+            dir = [0, 1]
+        elif op in '0123456789':
+            stack.append(int(op))
+        elif op == '_':
+            dir[1] = 0
+            dir[0] = -1 if pop() else 1
+        elif op == '|':
+            dir[0] = 0
+            dir[1] = -1 if pop() else 1 
+        elif op == ':':
+            x = pop()
+            stack.append(x)
+            stack.append(x)
+        elif op == '$':
+            pop()
+        elif op == '!':
+            stack.append(pop()==0)
+        elif op == '@':
+            return pop()
+        if dir[0]:
+            pc[0] = (pc[0] + dir[0]) % len(program[pc[1]]) 
+        if dir[1]:
+            pc[1] = (pc[1] + dir[1]) % len(program)
