@@ -117,7 +117,8 @@ All test input programs should terminate
     pc = [0, 0]
     dir = [1, 0]
     while True:
-        op = program[pc[1]][pc[0]]
+        line = program[pc[1]]
+        op = line[pc[0]] if pc[0] < len(line) else " "
         if op in '+-*/%`\\':
             a = pop()
             b = pop()
@@ -166,6 +167,6 @@ All test input programs should terminate
         elif op == '@':
             return pop()
         if dir[0]:
-            pc[0] = (pc[0] + dir[0]) % len(program[pc[1]]) 
+            pc[0] = (pc[0] + dir[0]) % 80
         if dir[1]:
             pc[1] = (pc[1] + dir[1]) % len(program)
