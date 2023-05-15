@@ -39,20 +39,37 @@ but not all issues of this form. Other kinds of UB are "okay" if you can get awa
 compiler flags, but reading uninitialized memory effectively adds an implicit dependence for your code on the calling code, which you do not have access to.
 ### C
 extension: .c
-All C solutions must be compilable with clang 11.0.1-2 with `--std=c17` and other flags, and should define a function like:
+All C solutions must be compilable with clang 11.0.1-2 with `--std=c17` and other flags, and should define a function that will be called through the
+declaration
 ```
-long ans(int x, int y) {
-
-}
+extern long ans();
 ```
-with the appropriate number of arguments. Do note that you must simply define a function which can be called by passing
-the appropriate number of arguments with the appropriate times: the actual definition can look different (e.g "implicit int"). All the
-notes in the `C++` section about UB apply here as well
+It will be called with a series of arguments agreeing with the python signature: `char*` for `str`, `int` for `int`, and with a final 
+`char*` outparam if the function returns a string in python. You can safely assume that outparam has enough memory allocated to write 
+the solution. See the following examples:
+```
+// Python signature (int, int) -> int
+long ans(int x, int y) { ... }
+// Python signature (str, int) -> str
+void ans(char* x, int y, char* out) { ... }
+```
+All the notes in the `C++` section about UB apply here as well
+### APL
+APL is an interesting programming language for sure for golf. APL 1.8 is supported.
+The arguments to the program will be passed, as character arrays, to the ARGS system
+variable as is done in the APL "script" mode. You do not need to end your script with `)OFF` as that will be added for you.
+Solutions in APL, like all other languages, will be graded on number of *characters*, not number of bytes
 ## Problems
 The following is the list of problems in the challenge
+### List
+A generic version of list.
+Function signature:
+```
+List(*args, **kwargs)
+```
 ### test1
 
-Find the sum of all positive integers less than the input k
+Find the sum of all positive integers less than the positive integer input k
 which are a multiple of 3 or a multiple of 5.
 For example, the list of numbers satisfying this property that 
 are less than 10 is 3,5,6,9 so therefore the answer is their sum, 23
@@ -82,11 +99,15 @@ is constructed by replacing runs of numbers with their count, as though saying o
 if the `start` value is 1:
 1 -> "one one" -> 11 -> "two ones" -> 21 -> "one two, one one" -> 1211 -> "one one, one two, two ones" -> 111221
 Given a `start` value, print out the value acheived after `count` iterations of this process
-For example test3(1, 0) = 1 and test3(1, 2) = 21
+For example test3(1, 1) = 11 and test3(1, 2) = 21
+Conditions:
+ * `start` nor any member of a sequence from a provided start will contain the digit `0`
+ * `count` >= 1
+ * The result string will be at most 80 characters long
     
 Function signature:
 ```
-test3(start: int, count: int) -> str
+test3(start: str, count: int) -> str
 ```
 ### test4
 
@@ -96,11 +117,12 @@ its integral output. The language operates with a single program stack, and star
 with the first character in the file, though if special characters are hit, control flow will go in other directions.
 See (https://esolangs.org/wiki/Befunge)[this webpage] for full details, but you must only implement the following operations:
 If control flow would ever fall off the "edge" of the program, it wraps to the other side (top to bottom, left to right, etc)
+If you would pop from an empty stack, the value 0 is used
 ```
 +   Addition: Pop two values a and b, then push the result of a+b
 -   Subtraction: Pop two values a and b, then push the result of b-a
 *   Multiplication: Pop two values a and b, then push the result of a*b
-/   Integer division: Pop two values a and b, then push the result of b/a, rounded down. According to the specifications, if a is zero, ask the user what result they want.
+/   Integer division: Pop two values a and b, then push the result of b/a, rounded down. Undefined if a = 0.
 %   Modulo: Pop two values a and b, then push the remainder of the integer division of b/a.
 !   Logical NOT: Pop a value. If the value is zero, push 1; otherwise, push zero.
 `   Greater than: Pop two values a and b, then push 1 if b>a, otherwise zero.
@@ -108,11 +130,11 @@ If control flow would ever fall off the "edge" of the program, it wraps to the o
 <   set direction left
 ^   set direction up
 v   set direction down
-?   Random PC direction
 _   Horizontal IF: pop a value; set direction to right if value=0, set to left otherwise
 |   Vertical IF: pop a value; set direction to down if value=0, set to up otherwise
 :   Duplicate top stack value
 \  Swap top stack values
+$   pop tock stack value and discard
 @   End program execution, returning the top of the stack as program output (0 if stack is empty)
 
 Function signature:

@@ -38,7 +38,8 @@ def problem_list() -> List[ProblemStatement]:
     ]))
     ret.append(ProblemStatement("test4", wrap_in_tuple([
         "reference_files/befunge/factorial.fun",
-        "reference_files/befunge/test_math.fun"
+        "reference_files/befunge/test_math.fun",
+        "reference_files/befunge/maze.fun"
     ])))
     return ret
 

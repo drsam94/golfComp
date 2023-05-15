@@ -25,8 +25,13 @@ int main(int argc, char** argv) {
     long output;
     long checkOutput;
     if (argc == 2) {
-        output = ans(inputs[0]);
-        checkOutput = ans(inputs[0]);
+        if (isdigit(argv[1][0])) {
+            output = ans(inputs[0]);
+            checkOutput = ans(inputs[0]);
+        } else {
+            output = ans(argv[1]);
+            checkOutput = ans(argv[1]);
+        }
     } else if (argc == 3) {
         output = ans(inputs[0], inputs[1]);
         checkOutput = ans(inputs[0], inputs[1]);
@@ -43,6 +48,6 @@ int main(int argc, char** argv) {
         printf("FAILED: got two different results: %lld, %lld", output, checkOutput);
         return 1;
     }
-    printf("%lld", output);
+    printf("%ld", output);
     return 0;
 }

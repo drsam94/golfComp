@@ -85,9 +85,10 @@ Befunge is a 2-D Programming language with intentional bespoke semantics. For th
 subset of Befunge, and your goal is to take as input a path to a file containing a befunge-subset program, and return
 its integral output. The language operates with a single program stack, and starts evaluating left-to-right starting 
 with the first character in the file, though if special characters are hit, control flow will go in other directions.
-See (https://esolangs.org/wiki/Befunge)[this webpage] for full details, but you must only implement the following operations:
 If control flow would ever fall off the "edge" of the program, it wraps to the other side (top to bottom, left to right, etc)
 If you would pop from an empty stack, the value 0 is used
+See https://esolangs.org/wiki/Befunge for full details, but you must only implement the following operations (we removed most
+operations related to IO or randomeness)
 ```
 +   Addition: Pop two values a and b, then push the result of a+b
 -   Subtraction: Pop two values a and b, then push the result of b-a
@@ -106,6 +107,9 @@ _   Horizontal IF: pop a value; set direction to right if value=0, set to left o
 \\  Swap top stack values
 $   pop tock stack value and discard
 @   End program execution, returning the top of the stack as program output (0 if stack is empty)
+```
+Program size is at most 80 chars wide by 25 lines long.
+All test input programs should terminate
 """
     program = open(filename).read().splitlines()
     stack: List[int] = []
