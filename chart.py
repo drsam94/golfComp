@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np 
 import json 
-from collections import defaultdict
+
 def main():
     import argparse 
     parser = argparse.ArgumentParser("chart", "Script for drawing charts from golf")
