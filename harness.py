@@ -3,7 +3,7 @@
 
 import sys
 from pathlib import Path 
-from typing import List, Any, Tuple, Iterable
+from typing import List, Any, Tuple, Iterable, Dict
 from executor import make_executor
 from data import Language, ProblemStatement, TestResult
 import inspect 
@@ -91,9 +91,32 @@ def check_results(dir: Path, problem: ProblemStatement, print_answers: bool) -> 
     with open(orig_input_file, "r") as o_file:
         # This is the size in _characters_, not in bytes, intentionally!
         file_size = len(o_file.read())
-    return TestResult(size=file_size, time=elapsed_time)
+    return TestResult(size=file_size, time=elapsed_time,lang=lang)
 
-
+def save_results(results: Dict[str, TestResult]):
+    import json
+    if results and all(res.is_valid() for _,res in results.items()):
+        lang = None
+        for _,res in results.items():
+            if lang is None:
+                lang = res.lang
+            elif lang != res.lang:
+                lang = None
+                break
+        key = lang.name if lang else "Any"
+        with open('results.json', 'r') as jf:
+            res_json = json.load(jf)
+        if key not in res_json:
+            res_json[key] = {}
+        user = 'samdonow'
+        if user not in res_json[key]:
+            res_json[key][user] = {}
+        write_map = res_json[key][user]
+        for name, res in results.items():
+            write_map[name] = res.size
+        with open('results.json', 'w') as jf:
+            json.dump(res_json, jf)
+    
 def main():
     import argparse 
     parser = argparse.ArgumentParser("harness", "Testing harness for codegolf, supply file to use as argument")
@@ -108,6 +131,7 @@ def main():
         print(f"{name}: {result}")
         tot_size += result.size
     print(f"Total Size: {tot_size}")
+    save_results(results)
     return 0 
 
 if __name__ == "__main__":

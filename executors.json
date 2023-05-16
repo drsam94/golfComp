@@ -1,0 +1,16 @@
+{
+    "APL" : {
+        "binary" : "/usr/local/bin/apl"
+    },
+    "C" : {
+        "binary" : "/usr/bin/clang",
+        "args" : ["--std=c17", "-fsanitize=memory"]
+    },
+    "Cpp" : {
+        "binary" : "/usr/bin/clang++",
+        "args" : ["--std=c++20", "-fsanitize=memory"]
+    },
+    "Javascript" : {
+        "binary" : "/usr/bin/node"
+    }
+}

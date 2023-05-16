@@ -29,13 +29,17 @@ class ProblemStatement:
         self.test_inputs = test_inputs
 
 class TestResult:
-    def __init__(self, size=0, err: Optional[str] = None, time=0.):
+    def __init__(self, *, lang: Optional[Language]=None,size=0, err: Optional[str] = None, time=0.):
         self.size = size
         self.err = err
         self.time = time
+        self.lang = lang
 
+    def is_valid(self) -> bool:
+        return not self.err
+    
     def __str__(self):
-        if self.err:
+        if not self.is_valid():
             return f"ERROR: {self.err}"
         else:
             return f"SUCCESS: {self.size} (time {self.time}s)"

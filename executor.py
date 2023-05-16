@@ -1,11 +1,28 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Tuple,Any,Optional
+from typing import Tuple,Any,Optional,List
 from data import Language
 import sys 
 import subprocess 
 from subprocess import PIPE
 from inspect import Signature 
+
+class Config():
+    def __init__(self, lang: Language, file="./executors.json"):
+        import json
+        with open(file, "r") as jf:
+            self.parsed_data = json.load(jf)[lang.name]
+
+    def get_binary(self) -> str:
+        return self.parsed_data["binary"]
+    def get_args(self) -> List[str]:
+        return self.parsed_data["args"]
+
+def get_config(lang: Language, glbl_map={}) -> Config:
+    nm = lang.name
+    if nm not in glbl_map:
+        glbl_map[nm] = Config(lang)
+    return glbl_map[nm]
 
 class Executor(ABC):
     @abstractmethod 
@@ -60,7 +77,10 @@ class CExecutor(Executor):
         self.test_dir = filename.parent 
         self.test_name = filename.stem
         self.signature = signature
-        run_result = subprocess.run(["clang", "--std=c17", "-fsanitize=memory", "-o", self.test_dir / self.test_name, "test_runner.c", filename], capture_output=True)
+        conf = get_config(Language.C)
+        cmd = [conf.get_binary()] + conf.get_args()
+        cmd += ["-o", self.test_dir / self.test_name, "test_runner.c", filename]
+        run_result = subprocess.run(cmd, capture_output=True)
         if run_result.returncode != 0:
             raise Exception(f"Compilation Failed: {run_result.stderr.decode()}")
     
@@ -73,7 +93,10 @@ class CppExecutor(Executor):
         self.test_dir = filename.parent 
         shutil.copy(filename, self.test_dir / "test_function.inc")
         self.test_name = filename.stem
-        run_result = subprocess.run(["clang++", "--std=c++20", "-fsanitize=memory", "-o", self.test_dir / self.test_name, "test_runner.cc", "-I", self.test_dir], capture_output=True)
+        conf = get_config(Language.Cpp)
+        cmd = [conf.get_binary()] + conf.get_args()
+        cmd += ["-o", self.test_dir / self.test_name, "test_runner.cc", "-I", self.test_dir]
+        run_result = subprocess.run(cmd, capture_output=True)
         if run_result.returncode != 0:
             raise Exception(f"Compilation Failed: {run_result.stderr.decode()}")
 
@@ -86,7 +109,8 @@ class JSExecutor(Executor):
         self.signature = signature  
     
     def execute(self, args: Tuple):
-        node_process = subprocess.Popen(["node", "-i"], stdin=PIPE, stdout=PIPE)
+        bin = get_config(Language.Javascript).get_binary()
+        node_process = subprocess.Popen([bin, "-i"], stdin=PIPE, stdout=PIPE)
         node_process.stdin.write(open(self.filename, "rb").read())
         eval_str = f"\nconsole.log();ans({','.join(repr(a) for a in args)})\n"
         try:
@@ -100,8 +124,10 @@ class JSExecutor(Executor):
         ret = out.decode().splitlines()[-2]
         if self.signature.return_annotation == str:
             return ret.replace("'","")
-        else:
+        try: 
             return int(ret)
+        except Exception as e:
+            raise Exception(f"Error when running: {out.decode()}")
 
 class APLExecutor(Executor):
     def __init__(self, filename: Path, signature: Signature):
@@ -115,7 +141,8 @@ class APLExecutor(Executor):
             write_file.write("\n)OFF\n")
     
     def execute(self, args: Tuple):
-        cmd = ["apl", "--script", "-f", self.filename, "--"] + [str(a) for a in args]
+        bin = get_config(Language.APL).get_binary()
+        cmd = [bin, "--script", "-f", self.filename, "--"] + [str(a) for a in args]
         run_result = subprocess.run(cmd, capture_output=True)
         if run_result.returncode != 0:
             raise Exception(f"Run Failed, stderr: {run_result.stderr}")
