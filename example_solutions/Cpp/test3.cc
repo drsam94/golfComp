@@ -1,0 +1,1 @@
+auto ans(string s,int r){for(;r--;){char*O=&s[0],n[99]={},*N=n,L,R=49;for(;L=*O++;++R)if(*O-L)*N++=R,*N++=L,R=48;s=n;}return s;}

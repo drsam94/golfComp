@@ -35,7 +35,9 @@ long ans(int x, int y) {
 
 }
 ```
-with the appropriate number of arguments. Note that, while it may be tempting to save characters, declarations like. `int x;` 
+with the appropriate number of arguments. C++ will use `std::string` as the input and output type when strings are necessary. 
+You can write your code assuming `<string>` as well as a using statment `using std::string;` are available
+Note that, while it may be tempting to save characters, declarations like. `int x;` 
 will declare an uninitialized variable on the stack. While you may be able to run it locally in such a way that such code passes,
 the testing harness will attempt to make your code fail if you try such tricks. Locally running with `fsanitize=memory` can catch many,
 but not all issues of this form. Other kinds of UB are "okay" if you can get away with it as the code does only have to work for one set of 

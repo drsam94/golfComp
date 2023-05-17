@@ -90,6 +90,7 @@ class CExecutor(Executor):
 class CppExecutor(Executor):
     def __init__(self, filename: Path, signature: Signature):
         import shutil
+        self.signature = signature
         self.test_dir = filename.parent 
         shutil.copy(filename, self.test_dir / "test_function.inc")
         self.test_name = filename.stem

@@ -1,5 +1,7 @@
 
 // Defines function "ans" with an unspecified type that gets inspected in templates below
+#include <string>
+using std::string;
 #include <test_function.inc>
 
 #include <stdio.h>
@@ -21,13 +23,18 @@ struct function_traits<R (*)(Args...)> {
     using ArgTupleType = std::tuple<Args...>;
 };
 
+namespace std {
+std::string to_string(const std::string& s) {
+    return s;
+}
+}
 template <typename F, typename ArgsArray, size_t... Indices>
-auto my_invoke_helper(F&&f, ArgsArray&& aa, std::index_sequence<Indices...>) {
-    return std::invoke(f, std::get<Indices>(aa)...);
+std::string my_invoke_helper(F&&f, ArgsArray&& aa, std::index_sequence<Indices...>) {
+    return std::to_string(std::invoke(f, std::get<Indices>(aa)...));
 }
 
-template <typename F, typename ArgsArray, typename TupleType = function_traits<F>::ArgTupleType>
-auto my_invoke(F&& f, ArgsArray&& aa) {
+template <typename F, typename ArgsArray, typename TupleType = typename function_traits<F>::ArgTupleType>
+std::string my_invoke(F&& f, ArgsArray&& aa) {
     return my_invoke_helper(f, aa, std::make_index_sequence<std::tuple_size_v<TupleType>>{});
 }
 
@@ -44,13 +51,30 @@ unsigned char playWithTheStack(char* seed) {
     return buffer[511];
 }
 
+/// A very hacky class for providing int or str inputs to the `ans` function
+class IntOrStr {
+    char* s;
+  public:
+    IntOrStr()=default;
+    IntOrStr(const IntOrStr&) = default;
+    IntOrStr(char* str) : s{str} {}
+
+    operator int() const {
+        return atoi(s);
+    }
+    operator std::string() const {
+        return std::string{s};
+    }
+};
+
 int main(int argc, char** argv) {
-    std::array<int, 32> inputs;
+    std::array<IntOrStr, 32> inputs;
     playWithTheStack(argv[1]);
     for (int index = 1; index < argc; ++index) {
-        inputs[index - 1] = atoi(argv[index]);
+        inputs[index - 1] = argv[index];
     }
-    long output = my_invoke(&ans, inputs), my_invoke(&ans, inputs);
-    printf("%lld\n", output);
+    std::string output = my_invoke(&ans, inputs);
+    output = my_invoke(&ans, inputs);
+    printf("%s", output.c_str());
     return 0;
 }
