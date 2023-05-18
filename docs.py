@@ -61,9 +61,16 @@ void ans(char* x, int y, char* out) { ... }
 All the notes in the `C++` section about UB apply here as well
 ### APL
 APL is an interesting programming language for sure for golf. APL 1.8 is supported.
-The arguments to the program will be passed, as character arrays, to the ARGS system
-variable as is done in the APL "script" mode. You do not need to end your script with `)OFF` as that will be added for you.
-Solutions in APL, like all other languages, will be graded on number of *characters*, not number of bytes
+The arguments to the program will be passed, as integer numbers or character arrays, to your function defined `ans`, such as with
+```
+∇Y ← ans x
+Y ← 2 + x
+∇
+```
+You should have a script with just the function definition.
+All problems will have 1 or 2 arguments, so define a unary or binary operator -- in the case of binary, the argument that
+is usually considered "second" in other languages will be the left-hand operand.
+Do not end your script with `)OFF` as your function will be called before closing the script. Solutions in APL, like all other languages, will be graded on number of *characters*, not number of bytes
 ## Problems
 The following is the list of problems in the challenge
 """

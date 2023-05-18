@@ -17,8 +17,12 @@ def problem_list() -> List[ProblemStatement]:
     ret.append(ProblemStatement("test1", wrap_in_tuple(list(range(1,10)) + [25, 45, 1000, 10000, 99999])))
     ret.append(ProblemStatement("test2", [
         (1900, 1901),
+        (1900, 1902),
+        (1900, 1903),
+        (1900, 1905),
         (1900, 2000),
         (1900, 2500),
+        (1901, 1902),
         (1950, 2050),
         (1950, 1950),
         (1975, 2089),

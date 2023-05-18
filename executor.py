@@ -132,23 +132,23 @@ class JSExecutor(Executor):
 
 class APLExecutor(Executor):
     def __init__(self, filename: Path, signature: Signature):
-        import shutil
-        self.filename = filename.parent / "test_file.apl"
+        self.filename = filename
         self.signature = signature
-        shutil.copy(filename, self.filename)
-        with open(self.filename, "a") as write_file:
-            # Optionally could send this sequence to stdin, but let's just write it at the end of the 
-            # file
-            write_file.write("\n)OFF\n")
     
     def execute(self, args: Tuple):
         bin = get_config(Language.APL).get_binary()
-        cmd = [bin, "--script", "-f", self.filename, "--"] + [str(a) for a in args]
-        run_result = subprocess.run(cmd, capture_output=True)
-        if run_result.returncode != 0:
-            raise Exception(f"Run Failed, stderr: {run_result.stderr}")
+        cmd = [bin, "--script", "-f", self.filename]
+        apl_process = subprocess.Popen(cmd, stdin=PIPE, stdout=PIPE)
+        ans_input = f"{args[1] if len(args) > 1 else ''} ans {args[0]}\n)OFF\n"
+        try:
+            out, err = apl_process.communicate(input=ans_input.encode(), timeout=5)
+        except Exception as e:
+            apl_process.kill()
+            raise e 
+        if err:
+            raise Exception(f"Run Failed, stderr: {err.decode()}")
         return_type = self.signature.return_annotation
-        return return_type(run_result.stdout.decode())
+        return return_type(out.decode())
 
 def make_executor(lang: Language, filename: Path, signature: Signature) -> Executor:
     cls : Optional[Executor] = None
