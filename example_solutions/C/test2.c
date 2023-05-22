@@ -1,1 +1,1 @@
-long ans(s,e){int w=1,d,y=1899,r=0;for(;e>=++y;++w)for(d=0;d<12;w+=(725>>d&1)+(1-d++?2:(y%25||y%16<1)&y%4<1))r+=y<s?0:w%7<1;return r;}
+long ans(s,e){int w=1,d,y=1899,r=0;for(;e>=++y;)for(d=0;d<12;w+=1-d++?2|5546>>d&1:y%25|y%16<1?y%4<1:0)y<s|w%7?:r++;return r;}

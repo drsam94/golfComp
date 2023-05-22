@@ -139,7 +139,7 @@ class APLExecutor(Executor):
         bin = get_config(Language.APL).get_binary()
         cmd = [bin, "--script", "-f", self.filename]
         apl_process = subprocess.Popen(cmd, stdin=PIPE, stdout=PIPE)
-        ans_input = f"{args[1] if len(args) > 1 else ''} ans {args[0]}\n)OFF\n"
+        ans_input = f"{repr(args[1]) if len(args) > 1 else ''} ans {repr(args[0])}\n)OFF\n"
         try:
             out, err = apl_process.communicate(input=ans_input.encode(), timeout=5)
         except Exception as e:
@@ -148,7 +148,7 @@ class APLExecutor(Executor):
         if err:
             raise Exception(f"Run Failed, stderr: {err.decode()}")
         return_type = self.signature.return_annotation
-        return return_type(out.decode())
+        return return_type(out.decode().replace(' ',''))
 
 def make_executor(lang: Language, filename: Path, signature: Signature) -> Executor:
     cls : Optional[Executor] = None

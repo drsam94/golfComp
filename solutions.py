@@ -61,7 +61,7 @@ Conditions:
     while remaining > 0:
         last = ''
         next_val = ''
-        run_length = 0
+        run_length = 0 
         for c in val:
             if run_length == 0:
                 last = c 
