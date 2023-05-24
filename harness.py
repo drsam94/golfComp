@@ -46,6 +46,14 @@ def problem_list() -> List[ProblemStatement]:
         "reference_files/befunge/maze.fun",
         "reference_files/befunge/sparse.fun"
     ])))
+    ret.append(ProblemStatement("test5", wrap_in_tuple([
+        [0,1,0,2,0,3,0],
+        [0,1,1,2,2,1,2,3,3,3,3],
+        [0,1,2,3,3,2,1,0,0,6,1,6,2,6,3,6],
+        [0,1,2,3,4,5,6,0,1,2,3,4,5,6],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [6,6,6,6,6,6,6,6,6,6]
+    ])))
     return ret
 
 def find_solution_file(dir: Path, name: str) -> Tuple[Language, Path]:

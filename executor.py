@@ -63,10 +63,16 @@ def execute_c_common(exec: Any, args: Tuple) -> int:
     If we get more diverse types, we'll have to add some technology here
     """
     cmd_args = [str(exec.test_dir / exec.test_name)]
-    cmd_args += [str(x) for x in args]
+    is_list = isinstance(args[0], list)
+    if is_list:
+        cmd_args += [str(x) for x in args[0]]
+    else:
+        cmd_args += [str(x) for x in args]
     return_type = exec.signature.return_annotation
     if return_type == str:
         cmd_args += ['S']
+    if is_list:
+        cmd_args += ['I']
     run_result = subprocess.run(cmd_args, capture_output=True)
     if run_result.returncode != 0:
         raise Exception(f"Run Failed, stderr: {run_result.stderr}")

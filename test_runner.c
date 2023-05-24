@@ -22,8 +22,8 @@ int main(int argc, char** argv) {
         inputs[index - 1] = atoi(argv[index]);
     }
     playWithTheStack(argv[1]);
-    long output;
-    long checkOutput;
+    long output=0;
+    long checkOutput=0;
     if (argc == 2) {
         if (isdigit(argv[1][0])) {
             output = ans(inputs[0]);
@@ -43,9 +43,12 @@ int main(int argc, char** argv) {
         ans(argv[1], inputs[1], buf);
         printf("%s", buf);
         return 0;
+    } else if (argv[argc - 1][0] == 'I') {
+        output = ans(&inputs[0], &inputs[argc - 2]);
+        checkOutput = output;
     }
     if (output != checkOutput) {
-        printf("FAILED: got two different results: %lld, %lld", output, checkOutput);
+        printf("FAILED: got two different results: %ld, %ld", output, checkOutput);
         return 1;
     }
     printf("%ld", output);

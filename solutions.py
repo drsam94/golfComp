@@ -17,7 +17,9 @@ A leap year occurs on most years divisible by 4, but if the year is divisble by
 30 days hath September, April, June and November
 
 Given 1900 <= start_year <= end_year <= 9999, how many "Friday the 13ths" occurred between
-those two years? (inclusive)
+those two years? (inclusive).
+Use of an existing library like python datetime.date or a similar library that encodes
+gregorian calendar rules is prohibited on this question
     """ 
     month_size = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     ret = 0
@@ -170,3 +172,89 @@ All test input programs should terminate
             pc[0] = (pc[0] + dir[0]) % 80
         if dir[1]:
             pc[1] = (pc[1] + dir[1]) % len(program)
+
+def test5(plays: List[int]) -> int:
+    """
+    The game of Connect 4 is played on a board with 7 columns and 6 rows. Players alternate
+    placing game pieces in one of the columns, where it will settle on top of any other pieces in
+    that column. A player wins when any four of their pieces are in a line vertically, horizontally, or
+    diagonally. Red always goes first.
+    Your input is a list of plays in a Connect Four game, so for example the array
+    `0,1,0,2,0,3,0`
+    Would represent a game in which Red always plays in the leftmost column, while Black
+    plays in other columns, and ends on Red's 4th turn.
+    Your function should return the result of the game, meaning:
+    `+N` if Red wins on their Nth turn
+    `-N` if Black wins on their Nth turn
+    0 if the game is a tie or is invalid
+    A game is invalid if a player would attempt to place a seventh piece in one column.
+    The input will be an array of integers in [0,6] inclusive.
+    C signature:
+    ```
+    long test5(int* start, int* end)
+    ``` 
+    """
+    data = []
+    for i in range(7):
+        data.append([0] * 6)
+    RED = 1
+    BLACK = -1
+    color = RED
+    turn = 1
+    for elem in plays:
+        if 0 not in data[elem]:
+            return 0
+        j = 0
+        while j < 6 and data[elem][j] != 0:
+            j += 1
+        # vertical
+        data[elem][j] = color
+        if j >= 3 and all(data[elem][j - k]== color for k in range(4)):
+            return color * turn
+        # horizontal
+        left = 1
+        while left <= elem and data[elem - left][j] == color:
+            left += 1
+        right = 1
+        while right + elem < 7 and data[elem + right][j] == color:
+            right += 1
+        if left + right - 1 >= 4:
+            return color * turn 
+        # diagonal up
+        left = 1
+        right = 1
+        while left <= elem and left <= j and data[elem - left][j - left] == color:
+            left += 1
+        while right + elem < 7 and right + j < 6 and data[elem + right][j + right] == color:
+            right += 1
+        if left + right - 1 >= 4:
+            return color * turn
+        # diagonal down
+        left = 1
+        right = 1
+        while left <= elem and left + j < 6 and data[elem - left][j + left] == color:
+            left += 1
+        while right + elem < 7 and right <= j and data[elem + right][j - right] == color:
+            right += 1
+        if left + right - 1 >= 4:
+            return color * turn
+        color *= -1
+        turn += 1
+    return 0
+         
+#def test5(nums: List[int]) -> int:
+#    """
+#    This question is inspired by the British game show _Countdown_
+#    Given a list of input natural numbers, you may update the list by combining any two numbers with any arithmetic operation.
+#    More precisely, you may take any two numbers `a,b` from your list, `b>=a`, and replace those numbers with one of
+#    `b/a`,`b*a`,`b-a`,`b+a`. You may only apply the division operation if `b` is divisble by `a`.
+#    You can repeat this operation until there is only 1 number left. The goal is to reach a target number through these 
+#    operations, and you succeed if the target number is generated after any number of iterations `0 <= iterationa <= |nums| - 1`.
+#    The target numbers are all 3 digit numbers.
+#    Find how many different target numbers can be reached given the input nums.
+#    ```
+#    2 <= |nums| <= 10
+#    1 <= num <= nums ∀ num in nums.
+#    ```
+#    """
+    
