@@ -27,6 +27,10 @@ Or, for a better codegolf solution:
 ```
 ans=lambda*a:sum(a)
 ```
+### Javascript
+extension .js
+Node version 18.16.0
+Define a function ans, arguments will be passed in the analagous types to python
 ### C++
 extension: .cc
 All C++ solutions must be compatible with clang 11.0.1-2 with `--std=c++20` and other flags, and should define a function like: 
@@ -36,8 +40,8 @@ long ans(int x, int y) {
 }
 ```
 with the appropriate number of arguments. C++ will use `std::string` as the input and output type when strings are necessary. 
-You can write your code assuming `<string>` as well as a using statment `using std::string;` are available
-Note that, while it may be tempting to save characters, declarations like. `int x;` 
+You can write your code assuming `<string>` as well as a using statment `using std::string;` will be available. Similarly `vector<int>` will be used for 
+numeric list arguments. Note that, while it may be tempting to save characters, declarations like. `int x;` 
 will declare an uninitialized variable on the stack. While you may be able to run it locally in such a way that such code passes,
 the testing harness will attempt to make your code fail if you try such tricks. Locally running with `fsanitize=memory` can catch many,
 but not all issues of this form. Other kinds of UB are "okay" if you can get away with it as the code does only have to work for one set of 
@@ -60,7 +64,7 @@ void ans(char* x, int y, char* out) { ... }
 ```
 All the notes in the `C++` section about UB apply here as well
 ### APL
-APL is an interesting programming language for sure for golf. APL 1.8 is supported.
+APL is an interesting programming language for sure for golf. GNU APL 1.8 is supported.
 The arguments to the program will be passed, as integer numbers or character arrays, to your function defined `ans`, such as with
 ```
 ∇Y ← ans x

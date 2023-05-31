@@ -1,7 +1,7 @@
 def ans(p):
  d=[6*[0]for _ in range(7)];c=t=1;g=lambda x,y:0<=x<7and-1<y<6and d[x][y]==c
  for e in p:
-  if d[e][5]:return 0
+  if d[e][5]:break
   j=d[e].index(0);d[e][j]=c;L=R=1
   while g(e,j-L):L+=1
   for Q in(-1,0,1,2):

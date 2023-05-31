@@ -1,7 +1,9 @@
 
 // Defines function "ans" with an unspecified type that gets inspected in templates below
 #include <string>
+#include <vector>
 using std::string;
+using std::vector;
 #include <test_function.inc>
 
 #include <stdio.h>
@@ -36,6 +38,18 @@ std::string my_invoke_helper(F&&f, ArgsArray&& aa, std::index_sequence<Indices..
 template <typename F, typename ArgsArray, typename TupleType = typename function_traits<F>::ArgTupleType>
 std::string my_invoke(F&& f, ArgsArray&& aa) {
     return my_invoke_helper(f, aa, std::make_index_sequence<std::tuple_size_v<TupleType>>{});
+}
+
+template <typename ArgsArray>
+std::string my_invoke(long (*f)(std::vector<int>), ArgsArray&& aa) {
+    std::vector<int> in;
+    for (auto elem : aa) {
+        if (std::string(elem) == "I") {
+            break;
+        }
+        in.push_back(elem);
+    }
+    return std::to_string(f(in));
 }
 
 // This function has no "real" side effects, but it is a function with a pretty big stack

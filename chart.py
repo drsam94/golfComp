@@ -16,11 +16,12 @@ def main():
     for lang, ldata in source.items():
         for user, p in ldata.items():
             entries.append((lang,user))
-            problems = p 
+            if len(p) > len(problems):
+                problems = p 
     data_counts = {
         p : np.array(
         [
-            source[lang][user][p] for lang,user in entries
+            source[lang][user].get(p,0) for lang,user in entries
         ]
         ) for p in problems
     }

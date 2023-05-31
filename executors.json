@@ -11,6 +11,6 @@
         "args" : ["--std=c++20", "-fsanitize=memory"]
     },
     "Javascript" : {
-        "binary" : "/usr/bin/node"
+        "binary" : "/home/samdonow/.nvm/versions/node/v18.16.0/bin/node"
     }
 }

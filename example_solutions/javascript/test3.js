@@ -1,4 +1,3 @@
-ans=(v,r)=>{for(;r--;){let n=v.slice(1)+"_",R=1,L=v[0]
-v=""
-for(c of n){if(c!=L)v+=R+L,R=0,L=c
-++R}}return v}
+ans=(v,r)=>{for(;r--;){var n='',R,L=0
+for(c of v+"_"){if(c!=L)n+=L?R+L:'',R=0,L=c
+++R}v=n}return n}
