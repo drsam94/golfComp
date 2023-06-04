@@ -7,6 +7,7 @@ class Language(Enum):
     C = 3
     Javascript = 4
     APL = 5
+    Perl = 6 
 
     @staticmethod
     def from_ext(ext: str):
@@ -20,6 +21,8 @@ class Language(Enum):
             return Language.Javascript
         elif ext == ".apl":
             return Language.APL 
+        elif ext == ".pl":
+            return Language.Perl
         else:
             return None
 

@@ -12,5 +12,8 @@
     },
     "Javascript" : {
         "binary" : "/home/samdonow/.nvm/versions/node/v18.16.0/bin/node"
+    },
+    "Perl" : {
+        "binary" : "/usr/bin/perl"
     }
 }

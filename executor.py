@@ -127,7 +127,6 @@ class JSExecutor(Executor):
             raise e
         if err:
             raise Exception(f"Error when running: {err.decode()}")
-        # NB: determine if we should output an int or not
         ret = out.decode().splitlines()[-2]
         if self.signature.return_annotation == str:
             return ret.replace("'","")
@@ -156,6 +155,32 @@ class APLExecutor(Executor):
         return_type = self.signature.return_annotation
         return return_type(out.decode().replace(' ',''))
 
+class PerlExecutor(Executor):
+    def __init__(self, filename: Path, signature: Signature):
+        self.filename = filename
+        self.signature = signature
+
+    def execute(self, args: Tuple):
+        bin = get_config(Language.Perl).get_binary()
+        cmd = [bin, self.filename]
+        perl_process = subprocess.Popen([bin], stdin=PIPE, stdout=PIPE)
+        perl_process.stdin.write(open(self.filename, "rb").read())
+        eval_str = f"\nprint ans({','.join(repr(a) for a in args)})\n"
+        try:
+            out, err = perl_process.communicate(input=eval_str.encode(), timeout=5)
+        except Exception as e:
+            perl_process.kill()
+            raise e
+        if err:
+            raise Exception(f"Error when running: {err.decode()}")
+        ret = out.decode()
+        if self.signature.return_annotation == str:
+            return ret.replace("'","")
+        try: 
+            return int(ret)
+        except Exception as e:
+            raise Exception(f"Error when running: {out.decode()}")
+        
 def make_executor(lang: Language, filename: Path, signature: Signature) -> Executor:
     cls : Optional[Executor] = None
     if lang == Language.Python:
@@ -168,6 +193,8 @@ def make_executor(lang: Language, filename: Path, signature: Signature) -> Execu
         cls = JSExecutor
     elif lang == Language.APL:
         cls = APLExecutor
+    elif lang == Language.Perl:
+        cls = PerlExecutor
     if cls is None:
         raise Exception(f"Unsupported Language {lang}")
     return cls(filename, signature)

@@ -27,7 +27,7 @@ def main():
     }
     print(data_counts)
     entries = tuple([f"{lang}\n{user}" for lang,user in entries])
-    width = 0.6
+    width = 0.4
     fix, ax = plt.subplots()
     bottom = np.zeros(len(entries))
     for problem, counts in data_counts.items():
