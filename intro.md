@@ -169,24 +169,24 @@ test4(filename: str) -> int
 ```
 ### test5
 
-    The game of Connect 4 is played on a board with 7 columns and 6 rows. Players alternate
-    placing game pieces in one of the columns, where it will settle on top of any other pieces in
-    that column. A player wins when any four of their pieces are in a line vertically, horizontally, or
-    diagonally. Red always goes first.
-    Your input is a list of plays in a Connect Four game, so for example the array
-    `0,1,0,2,0,3,0`
-    Would represent a game in which Red always plays in the leftmost column, while Black
-    plays in other columns, and ends on Red's 4th turn.
-    Your function should return the result of the game, meaning:
-    `+N` if Red wins on their Nth turn
-    `-N` if Black wins on their Nth turn
-    0 if the game is a tie or is invalid
-    A game is invalid if a player would attempt to place a seventh piece in one column.
-    The input will be an array of integers in [0,6] inclusive.
-    C signature:
-    ```
+The game of Connect 4 is played on a board with 7 columns and 6 rows. Players alternate
+placing game pieces in one of the columns, where it will settle on top of any other pieces in
+that column. A player wins when any four of their pieces are in a line vertically, horizontally, or
+diagonally. Red always goes first.
+Your input is a list of plays in a Connect Four game, so for example the array
+`0,1,0,2,0,3,0`
+Would represent a game in which Red always plays in the leftmost column, while Black
+plays in other columns, and ends on Red's 4th turn.
+Your function should return the result of the game, meaning:
+`+N` if Red wins on their Nth turn
+`-N` if Black wins on their Nth turn
+0 if the game is a tie or is invalid
+A game is invalid if a player would attempt to place a seventh piece in one column.
+The input will be an array of integers in [0,6] inclusive.
+C signature:
+```
     long test5(int* start, int* end)
-    ```
+```
     
 Function signature:
 ```
