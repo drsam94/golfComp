@@ -12,12 +12,12 @@ the inputs and translates them to the outputs. All solutions must:
   * Must run within a reasonable length of time (about a minute)
   * Be in a file named like `name.ext` where "name" is the name of the problem as defined below (case-sensitive) and ext is the canonical extension for the language
 ## Supported languages
-The following languages are supported in this competition, if you wish to compete in a different language, 
+The following languages are supported in this competition, if you wish to compete in a different language,
 you can help write an `Executor` class for the testing harness
 ### Python 3
 extension: .py
 All python solutions must be written in Python 3.9.2, with only standard libraries capable of being imported, and must
-have their solution computed by a function named `ans` which satisfies the specified contract of inputs and output type. 
+have their solution computed by a function named `ans` which satisfies the specified contract of inputs and output type.
 For example, if a problem was just to compute the sum of three integers, you could submit the following solution:
 ```
 def ans(x, y, z):
@@ -33,18 +33,18 @@ Node version 18.16.0
 Define a function ans, arguments will be passed in the analagous types to python
 ### C++
 extension: .cc
-All C++ solutions must be compatible with clang 11.0.1-2 with `--std=c++20` and other flags, and should define a function like: 
+All C++ solutions must be compatible with clang 11.0.1-2 with `--std=c++20` and other flags, and should define a function like:
 ```
 long ans(int x, int y) {
 
 }
 ```
-with the appropriate number of arguments. C++ will use `std::string` as the input and output type when strings are necessary. 
-You can write your code assuming `<string>` as well as a using statment `using std::string;` will be available. Similarly `vector<int>` will be used for 
-numeric list arguments. Note that, while it may be tempting to save characters, declarations like. `int x;` 
+with the appropriate number of arguments. C++ will use `std::string` as the input and output type when strings are necessary.
+You can write your code assuming `<string>` as well as a using statment `using std::string;` will be available. Similarly `vector<int>` will be used for
+numeric list arguments. Note that, while it may be tempting to save characters, declarations like. `int x;`
 will declare an uninitialized variable on the stack. While you may be able to run it locally in such a way that such code passes,
 the testing harness will attempt to make your code fail if you try such tricks. Locally running with `fsanitize=memory` can catch many,
-but not all issues of this form. Other kinds of UB are "okay" if you can get away with it as the code does only have to work for one set of 
+but not all issues of this form. Other kinds of UB are "okay" if you can get away with it as the code does only have to work for one set of
 compiler flags, but reading uninitialized memory effectively adds an implicit dependence for your code on the calling code, which you do not have access to.
 ### C
 extension: .c
@@ -53,8 +53,8 @@ declaration
 ```
 extern long ans();
 ```
-It will be called with a series of arguments agreeing with the python signature: `char*` for `str`, `int` for `int`, and with a final 
-`char*` outparam if the function returns a string in python. You can safely assume that outparam has enough memory allocated to write 
+It will be called with a series of arguments agreeing with the python signature: `char*` for `str`, `int` for `int`, and with a final
+`char*` outparam if the function returns a string in python. You can safely assume that outparam has enough memory allocated to write
 the solution. See the following examples:
 ```
 // Python signature (int, int) -> int
@@ -79,7 +79,7 @@ Do not end your script with `)OFF` as your function will be called before closin
 The following is the list of problems in the challenge
 """
 def main():
-    import solutions 
+    import solutions
     import inspect
     output_doc = intro()
     functions = [f for f in solutions.__dict__.items() if callable(f[1])]
